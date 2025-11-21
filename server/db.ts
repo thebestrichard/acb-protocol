@@ -1,6 +1,19 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, 
+  users, 
+  creditScores, 
+  InsertCreditScore,
+  loans,
+  InsertLoan,
+  lpPositions,
+  InsertLpPosition,
+  creditPools,
+  CreditPool,
+  transactions,
+  InsertTransaction
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +102,118 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Credit Score queries
+export async function getCreditScoreByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(creditScores).where(eq(creditScores.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertCreditScore(score: InsertCreditScore) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(creditScores).values(score).onDuplicateKeyUpdate({
+    set: {
+      score: score.score!,
+      tier: score.tier!,
+      totalLoans: score.totalLoans!,
+      successfulRepayments: score.successfulRepayments!,
+      defaults: score.defaults!,
+      lastCalculated: new Date(),
+    },
+  });
+}
+
+// Loan queries
+export async function createLoan(loan: InsertLoan) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.insert(loans).values(loan);
+  return result[0].insertId;
+}
+
+export async function getLoanById(loanId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(loans).where(eq(loans.id, loanId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserLoans(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(loans).where(eq(loans.userId, userId));
+}
+
+export async function updateLoanStatus(loanId: number, status: 'active' | 'repaid' | 'defaulted', repaidAmount?: string) {
+  const db = await getDb();
+  if (!db) return;
+  
+  const updateData: any = { status, updatedAt: new Date() };
+  if (status === 'repaid') {
+    updateData.repaidAt = new Date();
+    if (repaidAmount) updateData.repaidAmount = repaidAmount;
+  }
+  
+  await db.update(loans).set(updateData).where(eq(loans.id, loanId));
+}
+
+// LP Position queries
+export async function getLpPosition(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(lpPositions).where(eq(lpPositions.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertLpPosition(position: InsertLpPosition) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(lpPositions).values(position).onDuplicateKeyUpdate({
+    set: {
+      depositedAmount: position.depositedAmount,
+      lpTokens: position.lpTokens,
+      earnedInterest: position.earnedInterest!,
+      updatedAt: new Date(),
+    },
+  });
+}
+
+// Credit Pool queries
+export async function getCreditPool() {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(creditPools).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateCreditPool(poolData: Partial<CreditPool>) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.update(creditPools).set({ ...poolData, updatedAt: new Date() }).where(eq(creditPools.id, 1));
+}
+
+// Transaction queries
+export async function createTransaction(transaction: InsertTransaction) {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(transactions).values(transaction);
+}
+
+export async function getUserTransactions(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(transactions).where(eq(transactions.userId, userId));
+}
