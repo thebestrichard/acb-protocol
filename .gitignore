@@ -105,3 +105,9 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# Foundry
+cache/
+out/
+broadcast/
+contracts/lib/
