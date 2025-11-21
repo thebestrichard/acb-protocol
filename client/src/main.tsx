@@ -4,9 +4,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
+import { WagmiProvider } from "wagmi";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
+import { config } from "./lib/wagmi";
 
 const queryClient = new QueryClient();
 
@@ -53,9 +57,13 @@ const trpcClient = trpc.createClient({
 });
 
 createRoot(document.getElementById("root")!).render(
-  <trpc.Provider client={trpcClient} queryClient={queryClient}>
+  <WagmiProvider config={config}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RainbowKitProvider>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <App />
+        </trpc.Provider>
+      </RainbowKitProvider>
     </QueryClientProvider>
-  </trpc.Provider>
+  </WagmiProvider>
 );

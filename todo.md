@@ -47,6 +47,24 @@
 - [x] Include whitepaper and technical docs
 
 ## GitHub
-- [ ] Initialize git repository
-- [ ] Push to GitHub
-- [ ] Create initial release
+- [x] Initialize git repository
+- [x] Push to GitHub
+- [x] Create initial release
+
+## Web3 Integration
+- [x] Install Web3 dependencies (wagmi, viem, RainbowKit)
+- [x] Setup RainbowKit wallet connection
+- [x] Configure Base Sepolia network
+- [x] Create contract interaction hooks
+- [x] Implement borrow functionality with smart contract
+- [x] Implement repay functionality with smart contract
+- [x] Implement LP deposit functionality
+- [x] Implement LP withdraw functionality
+- [x] Display real-time data from smart contracts
+
+## Smart Contract Deployment
+- [x] Create deployment documentation
+- [ ] Deploy contracts to Base Sepolia (requires user's private key)
+- [ ] Verify contracts on BaseScan
+- [ ] Update frontend with contract addresses
+- [ ] Initialize credit pool with test liquidity

@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { APP_LOGO, APP_TITLE } from "@/const";
 import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
 import { Link } from "wouter";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Home() {
   return (
@@ -22,10 +23,9 @@ export default function Home() {
               <a className="text-slate-300 hover:text-white transition-colors">Lend</a>
             </Link>
             <Link href="/dashboard">
-              <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
-                Dashboard
-              </Button>
+              <a className="text-slate-300 hover:text-white transition-colors">Dashboard</a>
             </Link>
+            <ConnectButton />
           </div>
         </div>
       </nav>
@@ -107,24 +107,24 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="text-white">For Borrowers</CardTitle>
               </CardHeader>
-              <CardContent className="text-slate-300 space-y-3">
+              <div className="px-6 pb-6 text-slate-300 space-y-3">
                 <p>1. Connect your wallet and get your credit score calculated</p>
                 <p>2. Request a loan based on your borrowing limit</p>
                 <p>3. Receive funds instantly with dynamic interest rates</p>
                 <p>4. Repay on time to improve your credit score</p>
-              </CardContent>
+              </div>
             </Card>
 
             <Card className="bg-slate-900/50 border-slate-800">
               <CardHeader>
                 <CardTitle className="text-white">For Lenders</CardTitle>
               </CardHeader>
-              <CardContent className="text-slate-300 space-y-3">
+              <div className="px-6 pb-6 text-slate-300 space-y-3">
                 <p>1. Deposit assets into the liquidity pool</p>
                 <p>2. Earn interest from borrower repayments</p>
                 <p>3. Receive LP tokens representing your share</p>
                 <p>4. Withdraw anytime based on available liquidity</p>
-              </CardContent>
+              </div>
             </Card>
           </div>
         </div>

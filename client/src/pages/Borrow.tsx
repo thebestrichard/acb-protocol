@@ -1,23 +1,38 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
-import { trpc } from "@/lib/trpc";
-import { ArrowLeft } from "lucide-react";
+import { APP_LOGO, APP_TITLE } from "@/const";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Link } from "wouter";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { useCreditScore, useMaxBorrowAmount, useInterestRate, useRequestLoan, useUserLoans, useLoanDetails } from "@/hooks/useContracts";
+import { useState, useEffect } from "react";
+import { formatEther } from "viem";
+import { toast } from "sonner";
 
 export default function Borrow() {
-  const { user, isAuthenticated } = useAuth();
-  const { data: creditScore } = trpc.creditScore.getMine.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
-  const { data: loans } = trpc.loan.getMyLoans.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { address, isConnected } = useAccount();
+  const [amount, setAmount] = useState("");
+  const [duration, setDuration] = useState("30");
 
-  if (!isAuthenticated) {
+  const { data: creditData } = useCreditScore(address);
+  const { data: maxBorrow } = useMaxBorrowAmount(address);
+  const { data: interestRate } = useInterestRate(address);
+  const { data: loanIds } = useUserLoans(address);
+  
+  const { requestLoan, isPending, isSuccess } = useRequestLoan();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Loan requested successfully!");
+      setAmount("");
+      setDuration("30");
+    }
+  }, [isSuccess]);
+
+  if (!isConnected) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm">
@@ -28,20 +43,19 @@ export default function Borrow() {
                 <span className="text-xl font-bold text-white">{APP_TITLE}</span>
               </a>
             </Link>
+            <ConnectButton />
           </div>
         </nav>
         <div className="container mx-auto px-4 py-20">
           <Card className="max-w-md mx-auto bg-slate-900/50 border-slate-800">
             <CardHeader>
-              <CardTitle className="text-white">Login Required</CardTitle>
+              <CardTitle className="text-white">Connect Wallet</CardTitle>
               <CardDescription className="text-slate-400">
-                Please login to access borrowing features
+                Please connect your wallet to access borrowing features
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-                <a href={getLoginUrl()}>Login</a>
-              </Button>
+              <ConnectButton />
             </CardContent>
           </Card>
         </div>
@@ -49,13 +63,32 @@ export default function Borrow() {
     );
   }
 
-  const tier = creditScore?.tier || "C";
-  const score = creditScore?.score || 500;
+  const score = creditData ? Number(creditData.score) : 500;
+  const tier = creditData ? ["D", "C", "B", "A"][Number(creditData.tier)] : "C";
+  const totalLoans = creditData ? Number(creditData.totalLoans) : 0;
+  const successfulRepayments = creditData ? Number(creditData.successfulRepayments) : 0;
+  const defaults = creditData ? Number(creditData.defaults) : 0;
+
   const tierColors = {
     A: "text-green-400",
     B: "text-blue-400",
     C: "text-yellow-400",
     D: "text-red-400",
+  };
+
+  const maxBorrowEth = maxBorrow ? formatEther(maxBorrow) : "0";
+  const ratePercent = interestRate ? (Number(interestRate) / 100).toFixed(2) : "8.50";
+
+  const handleBorrow = () => {
+    if (!amount || parseFloat(amount) <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+    if (!duration || parseInt(duration) <= 0) {
+      toast.error("Please enter a valid duration");
+      return;
+    }
+    requestLoan(amount, parseInt(duration));
   };
 
   return (
@@ -68,11 +101,12 @@ export default function Borrow() {
               <span className="text-xl font-bold text-white">{APP_TITLE}</span>
             </a>
           </Link>
-          <Link href="/dashboard">
-            <Button variant="outline" className="border-slate-700 hover:bg-slate-800">
-              Dashboard
-            </Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/dashboard">
+              <a className="text-slate-300 hover:text-white transition-colors">Dashboard</a>
+            </Link>
+            <ConnectButton />
+          </div>
         </div>
       </nav>
 
@@ -99,15 +133,15 @@ export default function Borrow() {
                 <div className="mt-4 space-y-2 text-sm text-slate-400">
                   <div className="flex justify-between">
                     <span>Total Loans:</span>
-                    <span>{creditScore?.totalLoans || 0}</span>
+                    <span>{totalLoans}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Successful Repayments:</span>
-                    <span>{creditScore?.successfulRepayments || 0}</span>
+                    <span>{successfulRepayments}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Defaults:</span>
-                    <span>{creditScore?.defaults || 0}</span>
+                    <span>{defaults}</span>
                   </div>
                 </div>
               </div>
@@ -131,6 +165,8 @@ export default function Borrow() {
                     type="number"
                     step="0.01"
                     placeholder="0.00"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
@@ -140,21 +176,34 @@ export default function Borrow() {
                     id="duration"
                     type="number"
                     placeholder="30"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
                     className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
                 <div className="bg-slate-800 p-4 rounded-lg">
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-slate-400">Estimated Interest Rate:</span>
-                    <span className="text-white font-medium">~8.5% APR</span>
+                    <span className="text-white font-medium">~{ratePercent}% APR</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Your Borrowing Limit:</span>
-                    <span className="text-white font-medium">0.5 ETH</span>
+                    <span className="text-white font-medium">{parseFloat(maxBorrowEth).toFixed(4)} ETH</span>
                   </div>
                 </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  Request Loan
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={handleBorrow}
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Request Loan"
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -167,29 +216,45 @@ export default function Borrow() {
             <CardTitle className="text-white">Your Active Loans</CardTitle>
           </CardHeader>
           <CardContent>
-            {!loans || loans.length === 0 ? (
+            {!loanIds || loanIds.length === 0 ? (
               <p className="text-slate-400 text-center py-8">No active loans</p>
             ) : (
               <div className="space-y-4">
-                {loans.filter(loan => loan.status === 'active').map((loan) => (
-                  <div key={loan.id} className="bg-slate-800 p-4 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-white font-medium">Loan #{loan.id}</div>
-                        <div className="text-sm text-slate-400">
-                          Amount: {loan.amount} ETH • Rate: {loan.interestRate / 100}%
-                        </div>
-                      </div>
-                      <Button variant="outline" className="border-slate-700 hover:bg-slate-700">
-                        Repay
-                      </Button>
-                    </div>
-                  </div>
+                {loanIds.map((loanId) => (
+                  <LoanItem key={loanId.toString()} loanId={loanId} />
                 ))}
               </div>
             )}
           </CardContent>
         </Card>
+      </div>
+    </div>
+  );
+}
+
+function LoanItem({ loanId }: { loanId: bigint }) {
+  const { data: loan } = useLoanDetails(loanId);
+  
+  if (!loan) return null;
+
+  const amount = formatEther(loan.amount);
+  const interestRate = Number(loan.interestRate) / 100;
+  const status = ["Active", "Repaid", "Defaulted"][Number(loan.status)];
+
+  if (status !== "Active") return null;
+
+  return (
+    <div className="bg-slate-800 p-4 rounded-lg">
+      <div className="flex justify-between items-center">
+        <div>
+          <div className="text-white font-medium">Loan #{loanId.toString()}</div>
+          <div className="text-sm text-slate-400">
+            Amount: {parseFloat(amount).toFixed(4)} ETH • Rate: {interestRate.toFixed(2)}%
+          </div>
+        </div>
+        <Button variant="outline" className="border-slate-700 hover:bg-slate-700">
+          Repay
+        </Button>
       </div>
     </div>
   );

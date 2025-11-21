@@ -129,10 +129,14 @@ DATABASE_URL=your_database_url
 # Smart Contract Deployment
 PRIVATE_KEY=your_private_key
 BASESCAN_API_KEY=your_basescan_api_key
+BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+BASE_MAINNET_RPC_URL=https://mainnet.base.org
 
 # Application
 VITE_APP_TITLE=ACB Protocol
 ```
+
+**Important**: You also need to set up WalletConnect Project ID. See [WALLETCONNECT_SETUP.md](./WALLETCONNECT_SETUP.md) for instructions.
 
 ### Database Setup
 
@@ -201,23 +205,20 @@ forge test
 
 ### Deploy Smart Contracts
 
-Deploy to Base Sepolia testnet:
+**For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+Quick deployment to Base Sepolia testnet:
 
 ```bash
 forge script contracts/script/Deploy.s.sol:Deploy \
-  --rpc-url base_sepolia \
+  --rpc-url $BASE_SEPOLIA_RPC_URL \
+  --private-key $PRIVATE_KEY \
   --broadcast \
-  --verify
+  --verify \
+  --etherscan-api-key $BASESCAN_API_KEY
 ```
 
-Deploy to Base mainnet:
-
-```bash
-forge script contracts/script/Deploy.s.sol:Deploy \
-  --rpc-url base \
-  --broadcast \
-  --verify
-```
+After deployment, update contract addresses in `client/src/lib/wagmi.ts`
 
 ### Contract Addresses
 
