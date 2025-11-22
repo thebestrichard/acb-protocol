@@ -5,11 +5,11 @@ import { ArrowRight, Zap, Shield, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Logo, LogoText } from "@/components/Logo";
-import { WaterFlowAnimation } from "@/components/WaterFlowAnimation";
+import { MobiusStripAnimation } from "@/components/MobiusStripAnimation";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-blue-50/20">
       {/* Navigation */}
       <nav className="glass-strong sticky top-0 z-50 border-b border-white/20">
         <div className="container mx-auto flex items-center justify-between py-4">
@@ -46,7 +46,7 @@ export default function Home() {
           <div>
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Unsecured Credit
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mt-2">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400 mt-2">
                 Powered by AMM
               </span>
             </h1>
@@ -67,9 +67,9 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Water Flow Animation */}
+          {/* Mobius Strip Animation */}
           <div className="flex justify-center">
-            <WaterFlowAnimation />
+            <MobiusStripAnimation />
           </div>
         </div>
       </section>
@@ -91,8 +91,8 @@ export default function Home() {
 
           <Card className="glass-card border-white/40 hover:glass-strong transition-all duration-300">
             <CardHeader>
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-500/10 to-purple-600/10 flex items-center justify-center mb-4">
-                <TrendingUp className="h-6 w-6 text-purple-600" />
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center mb-4">
+                <TrendingUp className="h-6 w-6 text-blue-600" />
               </div>
               <CardTitle className="text-foreground">Dynamic Interest Rates</CardTitle>
               <CardDescription className="text-foreground/60">
@@ -157,25 +157,25 @@ export default function Home() {
             </CardHeader>
             <div className="px-6 pb-6 text-foreground/70 space-y-4">
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-semibold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
                   1
                 </div>
                 <p>Deposit assets into the liquidity pool</p>
               </div>
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-semibold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
                   2
                 </div>
                 <p>Earn interest from borrower repayments</p>
               </div>
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-semibold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
                   3
                 </div>
                 <p>Receive LP tokens representing your share</p>
               </div>
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-semibold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
                   4
                 </div>
                 <p>Withdraw anytime based on available liquidity</p>

@@ -41,7 +41,7 @@ export default function Lend() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-blue-50/20">
         <nav className="glass-strong sticky top-0 z-50 border-b border-white/20">
           <div className="container mx-auto flex items-center justify-between py-4">
             <Link href="/">
