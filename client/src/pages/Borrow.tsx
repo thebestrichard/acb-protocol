@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { APP_LOGO, APP_TITLE } from "@/const";
+import { APP_TITLE } from "@/const";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -11,6 +11,7 @@ import { useCreditScore, useMaxBorrowAmount, useInterestRate, useRequestLoan, us
 import { useState, useEffect } from "react";
 import { formatEther } from "viem";
 import { toast } from "sonner";
+import { Logo, LogoText } from "@/components/Logo";
 
 export default function Borrow() {
   const { address, isConnected } = useAccount();
@@ -34,23 +35,23 @@ export default function Borrow() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20">
+        <nav className="glass-strong sticky top-0 z-50 border-b border-white/20">
           <div className="container mx-auto flex items-center justify-between py-4">
             <Link href="/">
               <a className="flex items-center gap-2">
-                <img src={APP_LOGO} alt="ACB Logo" className="h-8 w-8" />
-                <span className="text-xl font-bold text-white">{APP_TITLE}</span>
+                <Logo className="h-8 w-8 text-primary" />
+                <LogoText className="text-xl text-foreground" />
               </a>
             </Link>
             <ConnectButton />
           </div>
         </nav>
         <div className="container mx-auto px-4 py-20">
-          <Card className="max-w-md mx-auto bg-slate-900/50 border-slate-800">
+          <Card className="max-w-md mx-auto glass-card border-white/40">
             <CardHeader>
-              <CardTitle className="text-white">Connect Wallet</CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardTitle className="text-foreground">Connect Wallet</CardTitle>
+              <CardDescription className="text-foreground/60">
                 Please connect your wallet to access borrowing features
               </CardDescription>
             </CardHeader>
@@ -70,10 +71,17 @@ export default function Borrow() {
   const defaults = creditData ? Number(creditData.defaults) : 0;
 
   const tierColors = {
-    A: "text-green-400",
-    B: "text-blue-400",
-    C: "text-yellow-400",
-    D: "text-red-400",
+    A: "text-green-600",
+    B: "text-blue-600",
+    C: "text-yellow-600",
+    D: "text-red-600",
+  };
+
+  const tierBgColors = {
+    A: "bg-green-500/10",
+    B: "bg-blue-500/10",
+    C: "bg-yellow-500/10",
+    D: "bg-red-500/10",
   };
 
   const maxBorrowEth = maxBorrow ? formatEther(maxBorrow) : "0";
@@ -92,18 +100,20 @@ export default function Borrow() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20">
+      <nav className="glass-strong sticky top-0 z-50 border-b border-white/20">
         <div className="container mx-auto flex items-center justify-between py-4">
           <Link href="/">
             <a className="flex items-center gap-2">
-              <img src={APP_LOGO} alt="ACB Logo" className="h-8 w-8" />
-              <span className="text-xl font-bold text-white">{APP_TITLE}</span>
+              <Logo className="h-8 w-8 text-primary" />
+              <LogoText className="text-xl text-foreground" />
             </a>
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Link href="/dashboard">
-              <a className="text-slate-300 hover:text-white transition-colors">Dashboard</a>
+              <a className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                Dashboard
+              </a>
             </Link>
             <ConnectButton />
           </div>
@@ -112,7 +122,7 @@ export default function Borrow() {
 
       <div className="container mx-auto px-4 py-8">
         <Link href="/">
-          <a className="inline-flex items-center text-slate-400 hover:text-white mb-6">
+          <a className="inline-flex items-center text-foreground/60 hover:text-foreground mb-6 transition-colors">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </a>
@@ -120,28 +130,28 @@ export default function Borrow() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Credit Score Card */}
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className="glass-card border-white/40">
             <CardHeader>
-              <CardTitle className="text-white">Your Credit Score</CardTitle>
+              <CardTitle className="text-foreground">Your Credit Score</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center">
-                <div className={`text-5xl font-bold ${tierColors[tier as keyof typeof tierColors]}`}>
+                <div className={`text-6xl font-bold ${tierColors[tier as keyof typeof tierColors]} ${tierBgColors[tier as keyof typeof tierBgColors]} rounded-2xl py-6 mb-4`}>
                   {tier}
                 </div>
-                <div className="text-2xl text-slate-300 mt-2">{score}/1000</div>
-                <div className="mt-4 space-y-2 text-sm text-slate-400">
-                  <div className="flex justify-between">
+                <div className="text-3xl font-semibold text-foreground mb-4">{score}/1000</div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between text-foreground/70">
                     <span>Total Loans:</span>
-                    <span>{totalLoans}</span>
+                    <span className="font-medium text-foreground">{totalLoans}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-foreground/70">
                     <span>Successful Repayments:</span>
-                    <span>{successfulRepayments}</span>
+                    <span className="font-medium text-foreground">{successfulRepayments}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-foreground/70">
                     <span>Defaults:</span>
-                    <span>{defaults}</span>
+                    <span className="font-medium text-foreground">{defaults}</span>
                   </div>
                 </div>
               </div>
@@ -149,17 +159,17 @@ export default function Borrow() {
           </Card>
 
           {/* Borrow Form */}
-          <Card className="lg:col-span-2 bg-slate-900/50 border-slate-800">
+          <Card className="lg:col-span-2 glass-card border-white/40">
             <CardHeader>
-              <CardTitle className="text-white">Request a Loan</CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardTitle className="text-foreground text-2xl">Request a Loan</CardTitle>
+              <CardDescription className="text-foreground/60">
                 Borrow without collateral based on your credit score
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <Label htmlFor="amount" className="text-slate-300">Loan Amount (ETH)</Label>
+                  <Label htmlFor="amount" className="text-foreground">Loan Amount (ETH)</Label>
                   <Input
                     id="amount"
                     type="number"
@@ -167,34 +177,35 @@ export default function Borrow() {
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="glass-strong border-white/40 text-foreground mt-2"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="duration" className="text-slate-300">Duration (Days)</Label>
+                  <Label htmlFor="duration" className="text-foreground">Duration (Days)</Label>
                   <Input
                     id="duration"
                     type="number"
                     placeholder="30"
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="glass-strong border-white/40 text-foreground mt-2"
                   />
                 </div>
-                <div className="bg-slate-800 p-4 rounded-lg">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-slate-400">Estimated Interest Rate:</span>
-                    <span className="text-white font-medium">~{ratePercent}% APR</span>
+                <div className="glass-strong rounded-xl p-6 space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-foreground/70">Estimated Interest Rate:</span>
+                    <span className="text-foreground font-semibold">~{ratePercent}% APR</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Your Borrowing Limit:</span>
-                    <span className="text-white font-medium">{parseFloat(maxBorrowEth).toFixed(4)} ETH</span>
+                    <span className="text-foreground/70">Your Borrowing Limit:</span>
+                    <span className="text-foreground font-semibold">{parseFloat(maxBorrowEth).toFixed(4)} ETH</span>
                   </div>
                 </div>
                 <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  className="w-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
                   onClick={handleBorrow}
                   disabled={isPending}
+                  size="lg"
                 >
                   {isPending ? (
                     <>
@@ -211,13 +222,13 @@ export default function Borrow() {
         </div>
 
         {/* Active Loans */}
-        <Card className="mt-6 bg-slate-900/50 border-slate-800">
+        <Card className="mt-6 glass-card border-white/40">
           <CardHeader>
-            <CardTitle className="text-white">Your Active Loans</CardTitle>
+            <CardTitle className="text-foreground text-2xl">Your Active Loans</CardTitle>
           </CardHeader>
           <CardContent>
             {!loanIds || loanIds.length === 0 ? (
-              <p className="text-slate-400 text-center py-8">No active loans</p>
+              <p className="text-foreground/60 text-center py-12">No active loans</p>
             ) : (
               <div className="space-y-4">
                 {loanIds.map((loanId) => (
@@ -244,15 +255,15 @@ function LoanItem({ loanId }: { loanId: bigint }) {
   if (status !== "Active") return null;
 
   return (
-    <div className="bg-slate-800 p-4 rounded-lg">
+    <div className="glass-strong rounded-xl p-6">
       <div className="flex justify-between items-center">
         <div>
-          <div className="text-white font-medium">Loan #{loanId.toString()}</div>
-          <div className="text-sm text-slate-400">
+          <div className="text-foreground font-semibold text-lg">Loan #{loanId.toString()}</div>
+          <div className="text-sm text-foreground/60 mt-1">
             Amount: {parseFloat(amount).toFixed(4)} ETH • Rate: {interestRate.toFixed(2)}%
           </div>
         </div>
-        <Button variant="outline" className="border-slate-700 hover:bg-slate-700">
+        <Button variant="outline" className="glass-card border-white/40 hover:glass-strong">
           Repay
         </Button>
       </div>
