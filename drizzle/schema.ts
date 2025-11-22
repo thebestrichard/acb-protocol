@@ -25,8 +25,67 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+// Borrow orders table
+export const borrowOrders = mysqlTable("borrowOrders", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: varchar("orderId", { length: 64 }).notNull().unique(),
+  borrower: varchar("borrower", { length: 42 }).notNull(),
+  amount: varchar("amount", { length: 64 }).notNull(),
+  maxInterestRate: int("maxInterestRate").notNull(),
+  duration: int("duration").notNull(),
+  creditScore: int("creditScore").notNull(),
+  status: mysqlEnum("status", ["pending", "matched", "cancelled", "expired"]).default("pending").notNull(),
+  txHash: varchar("txHash", { length: 66 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BorrowOrder = typeof borrowOrders.$inferSelect;
+export type InsertBorrowOrder = typeof borrowOrders.$inferInsert;
+
+// Lend orders table
+export const lendOrders = mysqlTable("lendOrders", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: varchar("orderId", { length: 64 }).notNull().unique(),
+  lender: varchar("lender", { length: 42 }).notNull(),
+  amount: varchar("amount", { length: 64 }).notNull(),
+  minInterestRate: int("minInterestRate").notNull(),
+  minCreditScore: int("minCreditScore").notNull(),
+  status: mysqlEnum("status", ["pending", "matched", "cancelled", "withdrawn"]).default("pending").notNull(),
+  txHash: varchar("txHash", { length: 66 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type LendOrder = typeof lendOrders.$inferSelect;
+export type InsertLendOrder = typeof lendOrders.$inferInsert;
+
+// Match records table
+export const matchRecords = mysqlTable("matchRecords", {
+  id: int("id").autoincrement().primaryKey(),
+  matchId: varchar("matchId", { length: 64 }).notNull().unique(),
+  borrowOrderId: varchar("borrowOrderId", { length: 64 }).notNull(),
+  lendOrderId: varchar("lendOrderId", { length: 64 }).notNull(),
+  borrower: varchar("borrower", { length: 42 }).notNull(),
+  lender: varchar("lender", { length: 42 }).notNull(),
+  amount: varchar("amount", { length: 64 }).notNull(),
+  interestRate: int("interestRate").notNull(),
+  duration: int("duration").notNull(),
+  matchedAt: timestamp("matchedAt").notNull(),
+  dueDate: timestamp("dueDate").notNull(),
+  settledAt: timestamp("settledAt"),
+  status: mysqlEnum("status", ["active", "settled", "defaulted"]).default("active").notNull(),
+  matchingProof: varchar("matchingProof", { length: 66 }).notNull(),
+  txHash: varchar("txHash", { length: 66 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MatchRecord = typeof matchRecords.$inferSelect;
+export type InsertMatchRecord = typeof matchRecords.$inferInsert;
+
 /**
- * Credit Pool table - stores liquidity pool information
+ * Credit pools table - stores liquidity pool information
  */
 export const creditPools = mysqlTable("credit_pools", {
   id: int("id").autoincrement().primaryKey(),

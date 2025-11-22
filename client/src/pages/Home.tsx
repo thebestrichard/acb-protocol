@@ -26,9 +26,10 @@ export default function Home() {
               </a>
             </Link>
             <Link href="/lend">
-              <a className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                Lend
-              </a>
+              <a className="text-foreground/70 hover:text-foreground transition-colors">Lend</a>
+            </Link>
+            <Link href="/order-book">
+              <a className="text-foreground/70 hover:text-foreground transition-colors">Order Book</a>
             </Link>
             <Link href="/dashboard">
               <a className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">

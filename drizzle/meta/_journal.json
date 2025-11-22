@@ -15,6 +15,13 @@
       "when": 1763690014902,
       "tag": "0001_heavy_silver_centurion",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1763850101370,
+      "tag": "0002_smart_stick",
+      "breakpoints": true
     }
   ]
 }

@@ -5,15 +5,17 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import OrderBook from "./pages/OrderBook";
 import Borrow from "./pages/Borrow";
 import Lend from "./pages/Lend";
 import Dashboard from "./pages/Dashboard";
 
 function Router() {
   return (
-    <Switch>
+     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/borrow"} component={Borrow} />
+      <Route path={"/order-book"} component={OrderBook} />
+      <Route path={"/404"} component={NotFound} />
       <Route path={"/lend"} component={Lend} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/404"} component={NotFound} />
