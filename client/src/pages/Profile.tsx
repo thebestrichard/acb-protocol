@@ -3,8 +3,8 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, Shield, User, CreditCard, History } from "lucide-react";
-import { useEffect } from "react";
+import { CheckCircle2, XCircle, Shield, User, CreditCard, History, Download } from "lucide-react";
+import { CreditNFT, downloadNFT } from "@/components/CreditNFT";
 
 export default function Profile() {
   const { verification, verify } = useWorldID();
@@ -20,6 +20,9 @@ export default function Profile() {
     undefined,
     { enabled: isVerified }
   );
+
+  // Mock data for demonstration
+  const mockCreditScore = creditScore || { score: 750, tier: "B" };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
@@ -38,7 +41,7 @@ export default function Profile() {
       </header>
 
       <main className="container mx-auto px-6 py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
           {/* World ID Verification Status */}
           <Card className="glass-card border-white/20">
             <CardHeader>
@@ -56,7 +59,7 @@ export default function Profile() {
                     Verified
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="border-gray-300 text-gray-600">
+                  <Badge variant="outline" className="border-gray-300">
                     <XCircle className="w-4 h-4 mr-1" />
                     Not Verified
                   </Badge>
@@ -66,53 +69,23 @@ export default function Profile() {
             <CardContent className="space-y-4">
               {isVerified ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-lg bg-blue-50/50 border border-blue-100">
-                      <div className="text-sm text-gray-600 mb-1">Verification Level</div>
-                      <div className="font-semibold text-blue-600 capitalize">
-                        {verificationLevel === "orb" ? "🌐 Orb Verified" : "📱 Device Verified"}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {verificationLevel === "orb" 
-                          ? "Highest level of verification" 
-                          : "Standard verification level"}
-                      </div>
-                    </div>
-                    <div className="p-4 rounded-lg bg-cyan-50/50 border border-cyan-100">
-                      <div className="text-sm text-gray-600 mb-1">Nullifier Hash</div>
-                      <div className="font-mono text-xs text-cyan-600 break-all">
-                        {nullifierHash ? `${nullifierHash.slice(0, 20)}...` : "N/A"}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Your unique anonymous identifier
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-700">Verification Level</span>
+                    <span className="text-sm font-semibold text-blue-600">
+                      {verificationLevel === "orb" ? "🌐 Orb Verified" : "📱 Device Verified"}
+                    </span>
                   </div>
-                  <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5" />
-                      <div>
-                        <div className="font-semibold text-gray-900">Verification Complete</div>
-                        <div className="text-sm text-gray-600 mt-1">
-                          You can now access all features of ACB Protocol, including borrowing and lending with enhanced credit limits.
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium text-gray-700">Nullifier Hash</span>
+                    <span className="text-xs font-mono text-gray-600">
+                      {nullifierHash.slice(0, 16)}...{nullifierHash.slice(-8)}
+                    </span>
                   </div>
                 </>
               ) : (
-                <div className="text-center py-8">
-                  <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Verify Your Identity
-                  </h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                    Complete World ID verification to access borrowing and lending features with better rates and higher limits.
-                  </p>
-                  <Button 
-                    onClick={() => verify("verify")}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-                  >
+                <div className="text-center py-6">
+                  <p className="text-gray-600 mb-4">Verify your identity with World ID to access all features</p>
+                  <Button onClick={() => verify("verify")} className="bg-blue-600 hover:bg-blue-700">
                     Verify with World ID
                   </Button>
                 </div>
@@ -120,111 +93,101 @@ export default function Profile() {
             </CardContent>
           </Card>
 
-          {/* Credit Score */}
+          {/* Dynamic Credit NFT Card */}
           {isVerified && (
             <Card className="glass-card border-white/20">
               <CardHeader>
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-8 h-8 text-blue-600" />
-                  <div>
-                    <CardTitle>Credit Score</CardTitle>
-                    <CardDescription>Your on-chain credit rating</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CreditCard className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <CardTitle>Your Credit NFT</CardTitle>
+                      <CardDescription>Dynamic NFT representing your credit score</CardDescription>
+                    </div>
                   </div>
+                  <Button
+                    onClick={() => downloadNFT(mockCreditScore.score, mockCreditScore.tier)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
-                {creditScore ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-4xl font-bold text-blue-600">
-                          {creditScore.score}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                          Out of 1000
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-semibold text-gray-900">
-                          Tier {creditScore.tier}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Credit Tier
-                        </div>
-                      </div>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-blue-600 to-cyan-600 transition-all"
-                        style={{ width: `${(creditScore.score / 1000) * 100}%` }}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                      <div>
-                        <div className="text-sm text-gray-600">Total Loans</div>
-                        <div className="text-lg font-semibold text-gray-900">
-                          {creditScore.totalLoans}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-600">Successful Repayments</div>
-                        <div className="text-lg font-semibold text-gray-900">
-                          {creditScore.successfulRepayments}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="text-gray-600">
-                      No credit history yet. Start borrowing to build your credit score.
-                    </div>
-                  </div>
-                )}
+                <div className="flex justify-center py-6">
+                  <CreditNFT creditScore={mockCreditScore.score} tier={mockCreditScore.tier} size={350} />
+                </div>
+                <div className="mt-6 text-center p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-gray-700">
+                    🎨 This dynamic NFT represents your credit score and updates automatically as your credit changes.
+                  </p>
+                </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Loan History */}
-          {isVerified && loans && loans.length > 0 && (
+          {/* Credit Score Card */}
+          {isVerified && (
+            <Card className="glass-card border-white/20">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <User className="w-8 h-8 text-blue-600" />
+                  <div>
+                    <CardTitle>Credit Score</CardTitle>
+                    <CardDescription>Your current creditworthiness</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center py-6">
+                  <div className="text-6xl font-bold text-blue-600 mb-2">{mockCreditScore.score}</div>
+                  <div className="text-xl font-semibold text-gray-700">Tier {mockCreditScore.tier}</div>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all"
+                    style={{ width: `${(mockCreditScore.score / 1000) * 100}%` }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Borrowing History */}
+          {isVerified && (
             <Card className="glass-card border-white/20">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <History className="w-8 h-8 text-blue-600" />
                   <div>
-                    <CardTitle>Loan History</CardTitle>
-                    <CardDescription>Your recent borrowing activity</CardDescription>
+                    <CardTitle>Borrowing History</CardTitle>
+                    <CardDescription>Your recent loan activities</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {loans.slice(0, 5).map((loan: any) => (
-                    <div 
-                      key={loan.id}
-                      className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 border border-gray-100"
-                    >
-                      <div>
-                        <div className="font-semibold text-gray-900">
-                          ${loan.amount.toLocaleString()}
+                {loans && loans.length > 0 ? (
+                  <div className="space-y-3">
+                    {loans.slice(0, 5).map((loan: any) => (
+                      <div key={loan.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-gray-900">${loan.amount}</p>
+                          <p className="text-sm text-gray-600">{new Date(loan.createdAt).toLocaleDateString()}</p>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          {new Date(loan.createdAt).toLocaleDateString()}
-                        </div>
+                        <Badge variant={loan.status === "active" ? "default" : "outline"}>
+                          {loan.status}
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant={loan.status === "active" ? "default" : "outline"}
-                        className={
-                          loan.status === "active" 
-                            ? "bg-blue-100 text-blue-700 border-blue-200" 
-                            : "border-green-200 text-green-700"
-                        }
-                      >
-                        {loan.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No borrowing history yet
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}

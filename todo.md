@@ -163,3 +163,15 @@
 - [x] Show credit score and borrowing history
 - [x] Add profile navigation link (route added)
 - [x] Style with glassmorphism theme
+
+## Dynamic Credit NFT
+- [x] Create CreditNFT visual component (frontend)
+- [x] Implement dynamic visual generation based on credit score
+- [x] Add NFT SVG export functionality
+- [x] Create NFT display in Profile page
+- [x] Add NFT download functionality
+- [ ] Implement on-chain NFT minting (future enhancement)
+- [ ] Add NFT update mechanism when credit score changes (automatic)
+- [ ] Implement NFT transfer functionality
+- [ ] Write NFT contract tests
+- [ ] Deploy NFT contract to Base Sepolia
