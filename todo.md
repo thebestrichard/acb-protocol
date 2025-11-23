@@ -143,3 +143,14 @@
 - [x] Add contract verification commands in deployment script
 - [x] Create post-deployment checklist (POST_DEPLOYMENT_GUIDE.md)
 - [x] Frontend ready for testnet deployment
+
+## Worldcoin Mini App Integration
+- [x] Install @worldcoin/minikit-js SDK
+- [x] Configure Mini App settings (manifest, permissions)
+- [x] Integrate World ID verification
+- [x] Replace wallet connection with World ID
+- [x] Add MiniKit payment integration
+- [x] Update UI for Mini App environment
+- [x] Add Mini App manifest configuration
+- [ ] Test in World App simulator
+- [ ] Submit to Mini App Store

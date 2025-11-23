@@ -1,231 +1,275 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { APP_TITLE } from "@/const";
-import { ArrowRight, Zap, Shield, TrendingUp } from "lucide-react";
-import { Link } from "wouter";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Logo, LogoText } from "@/components/Logo";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MobiusStripAnimation } from "@/components/MobiusStripAnimation";
+import { Link } from "wouter";
+import { Zap, TrendingUp, Shield } from "lucide-react";
+import { APP_TITLE } from "@/const";
+import { useWorldID } from "@/hooks/useWorldID";
+import { toast } from "sonner";
 
 export default function Home() {
+  const { isInstalled, isVerifying, verify } = useWorldID();
+
+  const handleVerify = async () => {
+    const result = await verify("acb-protocol-login");
+    if (result) {
+      toast.success("World ID verified successfully!");
+    } else {
+      toast.error("Verification failed. Please try again.");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-blue-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-white">
       {/* Navigation */}
-      <nav className="glass-strong sticky top-0 z-50 border-b border-white/20">
-        <div className="container mx-auto flex items-center justify-between py-4">
-          <Link href="/">
-            <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <Logo className="h-8 w-8 text-primary" />
-              <LogoText className="text-xl text-foreground" />
-            </a>
-          </Link>
-          <div className="flex items-center gap-6">
+      <nav className="glass-card border-b border-blue-200/20 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+              {APP_TITLE}
+            </div>
+          </div>
+          <div className="hidden md:flex items-center gap-6">
             <Link href="/borrow">
-              <a className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+              <a className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Borrow
               </a>
             </Link>
             <Link href="/lend">
-              <a className="text-foreground/70 hover:text-foreground transition-colors">Lend</a>
+              <a className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                Lend
+              </a>
             </Link>
             <Link href="/order-book">
-              <a className="text-foreground/70 hover:text-foreground transition-colors">Order Book</a>
+              <a className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                Order Book
+              </a>
             </Link>
             <Link href="/dashboard">
-              <a className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+              <a className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Dashboard
               </a>
             </Link>
-            <ConnectButton />
           </div>
+          {isInstalled ? (
+            <Button 
+              onClick={handleVerify}
+              disabled={isVerifying}
+              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg"
+            >
+              {isVerifying ? "Verifying..." : "Verify with World ID"}
+            </Button>
+          ) : (
+            <Button className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg">
+              Connect Wallet
+            </Button>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+          <div className="space-y-8">
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               Unsecured Credit
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400 mt-2">
+              <br />
+              <span className="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                 Powered by AMM
               </span>
             </h1>
-            <p className="text-xl text-foreground/60 mb-8 max-w-xl">
+            <p className="text-xl text-gray-600 leading-relaxed">
               Borrow without collateral using on-chain credit scores. Earn yield by providing liquidity with complete transparency.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <Link href="/borrow">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
-                  Start Borrowing <ArrowRight className="ml-2 h-4 w-4" />
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg px-8">
+                  Start Borrowing →
                 </Button>
               </Link>
               <Link href="/lend">
-                <Button size="lg" variant="outline" className="glass-card hover:glass-strong">
+                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8">
                   Become a Lender
                 </Button>
               </Link>
             </div>
           </div>
-          
-          {/* Mobius Strip Animation */}
           <div className="flex justify-center">
             <MobiusStripAnimation />
           </div>
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="glass-card border-white/40 hover:glass-strong transition-all duration-300">
+          <Card className="glass-card border border-blue-200/20 hover:shadow-xl transition-all">
             <CardHeader>
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center mb-4">
-                <Zap className="h-6 w-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-foreground">No Collateral Required</CardTitle>
-              <CardDescription className="text-foreground/60">
+              <CardTitle className="text-xl">No Collateral Required</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-gray-600">
                 Borrow based on your on-chain credit score without locking up assets
               </CardDescription>
-            </CardHeader>
+            </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/40 hover:glass-strong transition-all duration-300">
+          <Card className="glass-card border border-blue-200/20 hover:shadow-xl transition-all">
             <CardHeader>
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center mb-4">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center mb-4">
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-foreground">Dynamic Interest Rates</CardTitle>
-              <CardDescription className="text-foreground/60">
+              <CardTitle className="text-xl">Dynamic Interest Rates</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-gray-600">
                 AMM-based rates that adjust based on supply, demand, and credit scores
               </CardDescription>
-            </CardHeader>
+            </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/40 hover:glass-strong transition-all duration-300">
+          <Card className="glass-card border border-blue-200/20 hover:shadow-xl transition-all">
             <CardHeader>
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-600/10 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-indigo-600" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-foreground">Transparent & Secure</CardTitle>
-              <CardDescription className="text-foreground/60">
+              <CardTitle className="text-xl">Transparent & Secure</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-gray-600">
                 Credit tiering, risk reserves, and transparent on-chain operations
               </CardDescription>
-            </CardHeader>
+            </CardContent>
           </Card>
         </div>
       </section>
 
       {/* How It Works */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-foreground text-center mb-12">How It Works</h2>
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card className="glass-card border-white/40">
+        <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* For Borrowers */}
+          <Card className="glass-card border border-blue-200/20">
             <CardHeader>
-              <CardTitle className="text-foreground text-2xl">For Borrowers</CardTitle>
+              <CardTitle className="text-2xl">For Borrowers</CardTitle>
             </CardHeader>
-            <div className="px-6 pb-6 text-foreground/70 space-y-4">
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+            <CardContent className="space-y-6">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   1
                 </div>
-                <p>Connect your wallet and get your credit score calculated</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Connect your wallet and get your credit score calculated</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   2
                 </div>
-                <p>Request a loan based on your borrowing limit</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Request a loan based on your borrowing limit</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   3
                 </div>
-                <p>Receive funds instantly with dynamic interest rates</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Receive funds instantly with dynamic interest rates</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   4
                 </div>
-                <p>Repay on time to improve your credit score</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Repay on time to improve your credit score</h3>
+                </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="glass-card border-white/40">
+          {/* For Lenders */}
+          <Card className="glass-card border border-blue-200/20">
             <CardHeader>
-              <CardTitle className="text-foreground text-2xl">For Lenders</CardTitle>
+              <CardTitle className="text-2xl">For Lenders</CardTitle>
             </CardHeader>
-            <div className="px-6 pb-6 text-foreground/70 space-y-4">
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+            <CardContent className="space-y-6">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   1
                 </div>
-                <p>Deposit assets into the liquidity pool</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Deposit assets into the liquidity pool</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   2
                 </div>
-                <p>Earn interest from borrower repayments</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Earn interest from borrower repayments</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   3
                 </div>
-                <p>Receive LP tokens representing your share</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Receive LP tokens representing your share</h3>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold">
                   4
                 </div>
-                <p>Withdraw anytime based on available liquidity</p>
+                <div>
+                  <h3 className="font-semibold mb-1">Withdraw anytime based on available liquidity</h3>
+                </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="glass-card border-white/40 rounded-3xl p-12 text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to get started?
-          </h2>
-          <p className="text-foreground/60 mb-8 text-lg">
-            Join the future of decentralized credit lending on Base Chain
-          </p>
-          <div className="flex gap-4 justify-center">
+        <Card className="glass-card border border-blue-200/20 text-center">
+          <CardHeader>
+            <CardTitle className="text-3xl mb-4">Ready to get started?</CardTitle>
+            <CardDescription className="text-lg text-gray-600">
+              Join the future of decentralized credit lending on Base Chain
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap justify-center gap-4">
             <Link href="/borrow">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg px-8">
                 Start Borrowing
               </Button>
             </Link>
             <Link href="/lend">
-              <Button size="lg" variant="outline" className="glass-strong">
+              <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8">
                 Start Lending
               </Button>
             </Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/20 mt-20 glass">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Logo className="h-6 w-6 text-primary" />
-              <span className="text-sm text-foreground/60">© 2024 {APP_TITLE}. Built on Ethereum Base Chain.</span>
-            </div>
-            <div className="flex gap-6">
-              <a href="https://github.com/thebestrichard/acb-protocol" target="_blank" rel="noopener noreferrer" className="text-sm text-foreground/60 hover:text-foreground transition-colors">
-                GitHub
-              </a>
-              <a href="#" className="text-sm text-foreground/60 hover:text-foreground transition-colors">
-                Docs
-              </a>
-            </div>
+      <footer className="border-t border-blue-200/20 py-8">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
+          <div>© 2024 {APP_TITLE} · AMM-based Credit Borrowing Protocol. Built on Ethereum Base Chain.</div>
+          <div className="flex gap-6">
+            <a href="https://github.com/thebestrichard/acb-protocol" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">
+              GitHub
+            </a>
+            <a href="#" className="hover:text-blue-600 transition-colors">
+              Docs
+            </a>
           </div>
         </div>
       </footer>

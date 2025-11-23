@@ -1,0 +1,19 @@
+{
+  "name": "ACB Protocol",
+  "short_name": "ACB",
+  "description": "AMM-based unsecured credit borrowing protocol with on-chain credit scores",
+  "version": "1.0.0",
+  "icon": "/logo.svg",
+  "categories": ["defi", "lending"],
+  "permissions": [
+    "verify",
+    "wallet-auth",
+    "send-transaction",
+    "sign-message",
+    "pay"
+  ],
+  "supported_chains": ["base", "base-sepolia"],
+  "homepage_url": "https://acb-protocol.com",
+  "privacy_policy_url": "https://acb-protocol.com/privacy",
+  "terms_of_service_url": "https://acb-protocol.com/terms"
+}
