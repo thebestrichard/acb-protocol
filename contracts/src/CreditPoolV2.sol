@@ -249,15 +249,21 @@ contract CreditPoolV2 is Ownable, ReentrancyGuard, Pausable {
     {
         require(borrower != address(0), "Invalid borrower address");
         require(amount > 0, "Borrow amount must be greater than 0");
-        require(amount <= getMaxBorrowAmount(borrower), "Exceeds borrowing limit");
-        require(amount <= getAvailableLiquidity(), "Insufficient liquidity");
+        
+        // Check available liquidity first
+        uint256 available = getAvailableLiquidity();
+        require(amount <= available, "Insufficient liquidity");
+        
+        // Check borrowing limit
+        uint256 maxBorrow = getMaxBorrowAmount(borrower);
+        require(amount <= maxBorrow, "Exceeds borrowing limit");
         
         // Check utilization rate
         uint256 newUtilization = ((totalBorrowed + amount) * 10000) / totalLiquidity;
         require(newUtilization <= MAX_UTILIZATION_RATE, "Exceeds max utilization");
         
+        // Update state before external call (CEI pattern)
         totalBorrowed += amount;
-        
         uint256 interestRate = calculateInterestRate(borrower);
         
         // External call at the end
@@ -377,7 +383,7 @@ contract CreditPoolV2 is Ownable, ReentrancyGuard, Pausable {
     /**
      * @dev Emergency withdraw (only when paused)
      */
-    function emergencyWithdraw(uint256 amount) external onlyOwner whenPaused {
+    function emergencyWithdraw(uint256 amount) external onlyOwner whenPaused nonReentrant {
         require(amount <= address(this).balance, "Insufficient balance");
         
         (bool success, ) = owner().call{value: amount}("");
