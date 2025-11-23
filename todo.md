@@ -134,3 +134,12 @@
 - [x] Fix error message inconsistencies (✅ Reordered checks in borrow function)
 - [x] Apply CEI pattern (✅ State updates before external calls)
 - [ ] Update test expectations to match implementation (remaining 5 test failures are edge cases)
+
+## Deployment to Base Sepolia
+- [x] Create comprehensive deployment script
+- [x] Add contract address configuration system
+- [x] Create post-deployment guide
+- [x] Update frontend to use deployed contracts
+- [x] Add contract verification commands in deployment script
+- [x] Create post-deployment checklist (POST_DEPLOYMENT_GUIDE.md)
+- [x] Frontend ready for testnet deployment

@@ -1,16 +1,13 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { baseSepolia, base } from 'wagmi/chains';
+import { getContractAddresses } from './contracts';
 
 export const config = getDefaultConfig({
   appName: 'ACB Protocol',
-  projectId: 'YOUR_PROJECT_ID', // Get from WalletConnect Cloud
+  projectId: 'YOUR_PROJECT_ID', // Get from https://cloud.walletconnect.com
   chains: [baseSepolia, base],
   ssr: false,
 });
 
-// Contract addresses (will be updated after deployment)
-export const CONTRACT_ADDRESSES = {
-  creditScore: '0x0000000000000000000000000000000000000000',
-  creditPool: '0x0000000000000000000000000000000000000000',
-  loanManager: '0x0000000000000000000000000000000000000000',
-} as const;
+// Get contract addresses for Base Sepolia (default chain)
+export const CONTRACT_ADDRESSES = getContractAddresses(84532);
