@@ -22,6 +22,13 @@
       "when": 1763850101370,
       "tag": "0002_smart_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1763867413014,
+      "tag": "0003_noisy_tyrannus",
+      "breakpoints": true
     }
   ]
 }

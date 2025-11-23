@@ -67,6 +67,51 @@ export const appRouter = router({
       return await getUserTransactions(ctx.user.id);
     }),
   }),
+
+  // NFT Minting router
+  nft: router({
+    getMyMint: protectedProcedure.query(async ({ ctx }) => {
+      const { getNFTMintByUserId } = await import("./db");
+      return await getNFTMintByUserId(ctx.user.id);
+    }),
+    mint: protectedProcedure
+      .input((val: unknown) => {
+        if (typeof val === 'object' && val !== null && 
+            'nullifierHash' in val && typeof (val as any).nullifierHash === 'string' &&
+            'creditScore' in val && typeof (val as any).creditScore === 'number' &&
+            'tier' in val && typeof (val as any).tier === 'string' &&
+            'tokenId' in val && typeof (val as any).tokenId === 'number') {
+          return val as { nullifierHash: string; creditScore: number; tier: string; tokenId: number };
+        }
+        throw new Error('Invalid input: nullifierHash, creditScore, tier, and tokenId are required');
+      })
+      .mutation(async ({ ctx, input }) => {
+        const { getNFTMintByUserId, getNFTMintByNullifierHash, createNFTMint } = await import("./db");
+        
+        // Check if user already minted
+        const existingMint = await getNFTMintByUserId(ctx.user.id);
+        if (existingMint) {
+          throw new Error('NFT already minted for this user');
+        }
+        
+        // Check if nullifier hash already used
+        const existingNullifier = await getNFTMintByNullifierHash(input.nullifierHash);
+        if (existingNullifier) {
+          throw new Error('This World ID verification has already been used to mint an NFT');
+        }
+        
+        // Create NFT mint record
+        await createNFTMint({
+          userId: ctx.user.id,
+          tokenId: input.tokenId,
+          nullifierHash: input.nullifierHash,
+          creditScore: input.creditScore,
+          tier: input.tier,
+        });
+        
+        return { success: true, tokenId: input.tokenId };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

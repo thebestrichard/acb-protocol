@@ -60,6 +60,23 @@ export const lendOrders = mysqlTable("lendOrders", {
 export type LendOrder = typeof lendOrders.$inferSelect;
 export type InsertLendOrder = typeof lendOrders.$inferInsert;
 
+/**
+ * NFT Minting Records
+ * Tracks which users have minted their Credit NFT
+ */
+export const nftMints = mysqlTable("nft_mints", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  tokenId: int("token_id").notNull(),
+  nullifierHash: varchar("nullifier_hash", { length: 256 }).notNull(),
+  creditScore: int("credit_score").notNull(),
+  tier: varchar("tier", { length: 10 }).notNull(),
+  mintedAt: timestamp("minted_at").defaultNow().notNull(),
+});
+
+export type NFTMint = typeof nftMints.$inferSelect;
+export type InsertNFTMint = typeof nftMints.$inferInsert;
+
 // Match records table
 export const matchRecords = mysqlTable("matchRecords", {
   id: int("id").autoincrement().primaryKey(),

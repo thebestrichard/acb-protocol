@@ -175,3 +175,12 @@
 - [ ] Implement NFT transfer functionality
 - [ ] Write NFT contract tests
 - [ ] Deploy NFT contract to Base Sepolia
+
+## NFT Minting for Verified Users
+- [x] Add NFT minting state management (minted/not minted)
+- [x] Create mint NFT button in Profile page
+- [x] Add minting confirmation dialog
+- [x] Store NFT minting status in database
+- [x] Display minted NFT with token ID
+- [x] Add "Already Minted" badge for users who minted
+- [x] Show minting transaction status

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, Shield, User, CreditCard, History, Download } from "lucide-react";
 import { CreditNFT, downloadNFT } from "@/components/CreditNFT";
+import { MintNFTButton } from "@/components/MintNFTButton";
 
 export default function Profile() {
   const { verification, verify } = useWorldID();
@@ -117,6 +118,17 @@ export default function Profile() {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* NFT Minting Section */}
+                <div className="mb-6">
+                  <MintNFTButton 
+                    isVerified={isVerified} 
+                    nullifierHash={nullifierHash}
+                    onMintSuccess={() => {
+                      console.log("NFT minted successfully");
+                    }}
+                  />
+                </div>
+
                 <div className="flex justify-center py-6">
                   <CreditNFT creditScore={mockCreditScore.score} tier={mockCreditScore.tier} size={350} />
                 </div>

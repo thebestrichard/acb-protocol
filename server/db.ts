@@ -12,7 +12,9 @@ import {
   creditPools,
   CreditPool,
   transactions,
-  InsertTransaction
+  InsertTransaction,
+  nftMints,
+  InsertNFTMint
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -216,4 +218,35 @@ export async function getUserTransactions(userId: number) {
   if (!db) return [];
   
   return await db.select().from(transactions).where(eq(transactions.userId, userId));
+}
+
+// NFT Minting queries
+export async function getNFTMintByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get NFT mint: database not available");
+    return undefined;
+  }
+  const result = await db.select().from(nftMints).where(eq(nftMints.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createNFTMint(mint: InsertNFTMint) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create NFT mint: database not available");
+    return undefined;
+  }
+  const result = await db.insert(nftMints).values(mint);
+  return result;
+}
+
+export async function getNFTMintByNullifierHash(nullifierHash: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get NFT mint: database not available");
+    return undefined;
+  }
+  const result = await db.select().from(nftMints).where(eq(nftMints.nullifierHash, nullifierHash)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
 }
