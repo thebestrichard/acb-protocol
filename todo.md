@@ -154,3 +154,12 @@
 - [x] Add Mini App manifest configuration
 - [ ] Test in World App simulator
 - [ ] Submit to Mini App Store
+
+## User Profile Page
+- [x] Create Profile page component
+- [x] Display World ID verification status
+- [x] Show user verification level (orb/device)
+- [x] Display user's nullifier hash
+- [x] Show credit score and borrowing history
+- [x] Add profile navigation link (route added)
+- [x] Style with glassmorphism theme

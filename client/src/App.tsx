@@ -9,6 +9,7 @@ import OrderBook from "./pages/OrderBook";
 import Borrow from "./pages/Borrow";
 import Lend from "./pages/Lend";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 
 function Router() {
   return (
@@ -16,8 +17,8 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/order-book"} component={OrderBook} />
       <Route path={"/404"} component={NotFound} />
-      <Route path={"/lend"} component={Lend} />
-      <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/lend"} component={Lend} />      <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/profile"} component={Profile} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
